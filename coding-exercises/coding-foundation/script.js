@@ -11,7 +11,11 @@ function createSquares() {
 function eatSquares() {
     addEventListener("click", function(event) {
         if (event.target.id == "square") {
-            event.target.style.backgroundColor = "black";
+            if (event.target.style.backgroundColor == "black") {
+                event.target.style.backgroundColor = "white";
+            } else {
+                event.target.style.backgroundColor = "black";
+            };
         }
     });
 }
