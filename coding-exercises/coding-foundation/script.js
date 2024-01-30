@@ -4,18 +4,16 @@ function createSquares() {
         var square = document.createElement("div");
         square.id = "square";
         document.getElementById("boxes").appendChild(square);    
+        eatSquares(square);
     }
-    eatSquares();
 }
 
-function eatSquares() {
-    addEventListener("click", function(event) {
-        if (event.target.id == "square") {
-            if (event.target.style.backgroundColor == "black") {
-                event.target.style.backgroundColor = "white";
-            } else {
-                event.target.style.backgroundColor = "black";
-            };
+function eatSquares(square) {
+    square.addEventListener("click", function(event) {
+        if (event.target.style.backgroundColor == "black") {
+            event.target.style.backgroundColor = "white";
+        } else {
+            event.target.style.backgroundColor = "black";
         }
     });
 }
