@@ -1,6 +1,6 @@
 # Storytelling with Data Visualization 🦕
 
-Hi! I am [your name] and in this repository I will develop my work for the *Storytelling with Data Visualization* class.  
+Hi! I am Ashley and in this repository I will develop my work for the *Storytelling with Data Visualization* class.  
 
 ### My work
 
