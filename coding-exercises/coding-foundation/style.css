@@ -1,0 +1,21 @@
+body {
+   background: black; 
+}
+
+#inputs {
+    text-align: center;
+}
+
+#boxes {
+    display: inline-flex;
+    flex-wrap: wrap;
+    padding: 2% 15% 2% 15%;
+
+}
+
+#square {
+    background: white;
+    width: 20px;   
+    height: 20px;
+    margin: 5px;
+}
