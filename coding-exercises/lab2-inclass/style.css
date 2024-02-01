@@ -1,0 +1,17 @@
+#vizContainer {
+    background-color: bisque;
+}
+.bar {
+    height: 12px;
+    width: 50px;
+    outline: 1px solid black;
+    margin-bottom: 5px;
+}
+
+.label {
+    font-size: 10px;
+    margin-top: 0;
+    font-family: sans-serif;
+    font-weight: bold;
+    white-space: nowrap;
+}
