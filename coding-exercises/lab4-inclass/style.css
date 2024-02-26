@@ -1,0 +1,14 @@
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
+#viz {
+    border: 1px black solid;
+    background-color: lightblue;
+}
+
+.mangaTitle {
+    font-size: 8px;
+}
