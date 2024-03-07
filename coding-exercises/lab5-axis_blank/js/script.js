@@ -46,7 +46,7 @@ function gotData(incomingData){
   let incidenceExtent = d3.extent(filteredDataWithTime, d => d.Incidence);
   let yScale = d3.scaleLinear().domain(incidenceExtent).range([h-paddingY, paddingY]);
 
-  let xAxisGroup = viz.append("g").attr("class", "xaxis");
+  let xAxisGroup = viz.append("g").attr("class", "xAxisGroup");
   let xAxis = d3.axisBottom(xScale);
   xAxisGroup.call(xAxis);
   xAxisGroup.attr("transform", "translate(0,"+(h-paddingY)+")");
