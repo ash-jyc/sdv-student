@@ -43,7 +43,6 @@ function gotData(incomingData){
 
   // console.log(filteredDataBefore2020);
 
-  // MAKE A COLOR SCALE FOR RANK
   let topTenUSBefore2020 = filteredDataBefore2020.filter(d =>
     parseInt(d.daily_rank) <= 10
   );
@@ -56,6 +55,10 @@ function gotData(incomingData){
 
   let releaseDateExtent = d3.extent(topTenUSBefore2020, d => d.album_release_date);
   let yScale = d3.scaleTime().domain(releaseDateExtent).range([h-paddingY, paddingY]);
+
+  // MAKE A COLOR SCALE FOR RANK
+  let rankExtent = [1, 2, 10]
+  let colorScale = d3.scaleLinear().domain(rankExtent).range(["red", "purple", "white"]);
 
   // CREATE AXES
   let xAxisGroup = viz.append("g").attr("class", "xAxisGroup");
@@ -85,6 +88,7 @@ function gotData(incomingData){
     .append("circle")
       .attr("class", "songCircle")
       .attr("r", 5)
+      .attr("fill", d => colorScale(parseInt(d.daily_rank)))
   ;
 }
 
