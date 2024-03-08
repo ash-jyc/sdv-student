@@ -26,30 +26,32 @@ function getCountry(d, i) {
 function gotData(incomingData) {
 
     let filteredData = incomingData.filter((d) => {
-        return parseInt(d.album_release_date.slice(0, 4)) <= 2014 && parseInt(d.album_release_date.slice(0, 4)) >= 2000 && d.daily_rank == "1";
+        return parseInt(d.album_release_date.slice(0, 4)) == 2014 && parseInt(d.daily_rank) <= 1;
     });
+
+    console.log(filteredData)
 
     // console.log(filteredData)
 
-    let groupelements = viz.selectAll(".datagroup").data(filteredData).enter()
-        .append("g")
-        .attr("class", "datagroup")
-        .attr("transform", getLocation)
-    ;
+    // let groupelements = viz.selectAll(".datagroup").data(filteredData).enter()
+    //     .append("g")
+    //     .attr("class", "datagroup")
+    //     .attr("transform", getLocation)
+    // ;
 
-    groupelements.append("circle")
-        .attr("r", 5)
-        .attr("x", 10)
-        .attr("y", 10)
-    ;
+    // groupelements.append("circle")
+    //     .attr("r", 5)
+    //     .attr("x", 10)
+    //     .attr("y", 10)
+    // ;
 
-    groupelements.append("text")
-        .text(getName)
-    ;
-    groupelements.append("text")
-        .text(getCountry)
-        .attr("y", 15)
-    ;
+    // groupelements.append("text")
+    //     .text(getName)
+    // ;
+    // groupelements.append("text")
+    //     .text(getCountry)
+    //     .attr("y", 15)
+    // ;
 }
 
 d3.csv("universal_top_spotify_songs.csv").then(gotData);

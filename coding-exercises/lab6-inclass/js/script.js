@@ -1,4 +1,6 @@
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+// import * as d3 from "https://d3js.org/d3.v4.js";
+
 
 // keys: "spotify_id","name","artists","daily_rank","daily_movement","weekly_movement","country","snapshot_date","popularity","is_explicit","duration_ms","album_name","album_release_date","danceability","energy","key","loudness","mode","speechiness","acousticness","instrumentalness","liveness","valence","tempo","time_signature"
 
@@ -9,18 +11,21 @@ let paddingY = 40;
 
 let viz = d3.select("#container")
   .append("svg")
-    .attr("class", "viz")
-    .attr("width", w)
-    .attr("height", h)
-    .style("background-color", "rgb(104 106 171)")
-;
+  .attr("class", "viz")
+  .attr("width", w)
+  .attr("height", h)
+  .style("background-color", "rgb(189, 175, 220)")
+  ;
 
 
-function gotData(incomingData){
+function gotData(incomingData) {
   // console.log(incomingData);
+  viz.selectAll("*").remove();
 
-  let filteredData = incomingData.filter(d => 
-    d.country=="US"
+  let country = document.getElementById("chooseCountry").value;
+
+  let filteredData = incomingData.filter(d =>
+    d.country == country
   );
 
   // console.log(filteredData)
@@ -37,7 +42,7 @@ function gotData(incomingData){
   let filteredDataWithTime = filteredData.map(mapFunction);
   console.log(filteredDataWithTime);
 
-  let filteredDataBefore2020 = filteredDataWithTime.filter(d => 
+  let filteredDataBefore2020 = filteredDataWithTime.filter(d =>
     d.album_release_date <= threshDate
   );
 
@@ -51,46 +56,85 @@ function gotData(incomingData){
 
   // CREATE SCALES
   let snapshotDateExtent = d3.extent(topTenUSBefore2020, d => d.snapshot_date);
-  let xScale = d3.scaleTime().domain(snapshotDateExtent).range([paddingX, w-paddingX]);
+  let xScale = d3.scaleTime().domain(snapshotDateExtent).range([paddingX, w - paddingX]);
 
   let releaseDateExtent = d3.extent(topTenUSBefore2020, d => d.album_release_date);
-  let yScale = d3.scaleTime().domain(releaseDateExtent).range([h-paddingY, paddingY]);
+  let yScale = d3.scaleTime().domain(releaseDateExtent).range([h - paddingY, paddingY]);
 
   // MAKE A COLOR SCALE FOR RANK
   let rankExtent = [1, 2, 10]
-  let colorScale = d3.scaleLinear().domain(rankExtent).range(["red", "purple", "white"]);
+  let colorScale = d3.scaleLinear().domain(rankExtent).range(["red", "purple", "blue"]);
 
   // CREATE AXES
   let xAxisGroup = viz.append("g").attr("class", "xAxisGroup");
   let xAxis = d3.axisBottom(xScale);
   xAxisGroup.call(xAxis);
-  xAxisGroup.attr("transform", "translate(0,"+(h-paddingY)+")");
+  xAxisGroup.attr("transform", "translate(0," + (h - paddingY) + ")");
 
   let yAxisGroup = viz.append("g").attr("class", "yAxisGroup");
   let yAxis = d3.axisLeft(yScale);
   yAxisGroup.call(yAxis);
-  yAxisGroup.attr("transform", "translate("+(paddingX)+",0)");
-  
+  yAxisGroup.attr("transform", "translate(" + (paddingX) + ",0)");
+
   // CREATE DATAGROUPS
   function getLocation(d) {
     let x = xScale(d.snapshot_date);
     let y = yScale(d.album_release_date);
-    return "translate("+x+","+y+")";
+    return "translate(" + x + "," + y + ")";
   }
 
   let datagroups = viz.selectAll(".datagroup").data(topTenUSBefore2020).enter()
     .append("g")
-      .attr("class", "datagroup")
-      .attr("transform", getLocation)
-  ;
+    .attr("class", "datagroup")
+    .attr("transform", getLocation)
+    ;
+
+  // ADD MOUSEOVER
+
+  var tooltip = d3.select("#tooltip")
+    .append("div")
+    .style("opacity", 0)
+    .attr("class", "tooltip")
+    .style("background-color", "white")
+    .style("border", "solid")
+    .style("border-width", "2px")
+    .style("border-radius", "5px")
+    .style("padding", "5px")
+
+  var mouseover = function (event, d) {
+    tooltip
+      .style("opacity", 1)
+    d3.select(this)
+      .style("stroke", "black")
+      .style("opacity", 1)
+  }
+  var mousemove = function (event, d) {
+    tooltip
+      .html("Song: " + d.name + "<br/>" + "Release date: " + d.album_release_date)
+      .style("left", (event.pageX + 70) + "px")
+      .style("top", (event.pageY) + "px")
+  }
+  var mouseleave = function (event, d) {
+    tooltip
+      .style("opacity", 0)
+    d3.select(this)
+      .style("stroke", "none")
+      .style("opacity", 0.8)
+  }
 
   datagroups
     .append("circle")
-      .attr("class", "songCircle")
-      .attr("r", 5)
-      .attr("fill", d => colorScale(parseInt(d.daily_rank)))
+    .attr("class", "songCircle")
+    .attr("r", 5)
+    .attr("fill", d => colorScale(parseInt(d.daily_rank)))
+    .on("mouseover", mouseover)
+    .on("mousemove", mousemove)
+    .on("mouseout", mouseleave);
   ;
 }
 
+function byCountry() {
+  d3.csv("universal_top_spotify_songs.csv").then(gotData);
+}
 
-d3.csv("universal_top_spotify_songs.csv").then(gotData);
+window.byCountry = byCountry;

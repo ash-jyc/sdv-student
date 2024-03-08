@@ -7,13 +7,16 @@
     <link rel="stylesheet" href="css/style.css">
   </head>
   <body>
-
-
+    <h1>Trending songs released in 2020</h1>
+    <div id="tooltip" style="position: absolute; opacity: 0;"></div>
+    <div>
+      <input type="text" id="chooseCountry" placeholder="Choose a country">
+      <button id="countrySelector" onclick=byCountry()>Submit</button>
+    </div>
     <!-- everything you create should be in the following container -->
     <!-- Use D3 to place your svg(s) in it, too -->
     <div id="container">
-
-
+      
     </div>
 
     <script src="js/script.js" type="module"></script>
