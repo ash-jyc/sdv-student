@@ -31,6 +31,7 @@ function gotData(incomingData) {
   // console.log(filteredData)
 
   let timeParser = d3.timeParse("%Y-%m-%d");
+  let formatDate = d3.timeFormat("%B %d, %Y");
   let threshDate = timeParser("2020-12-31");
 
   function mapFunction(d) {
@@ -90,11 +91,8 @@ function gotData(incomingData) {
     ;
 
   // ADD MOUSEOVER
-
   var tooltip = d3.select("#tooltip")
-    .append("div")
-    .style("opacity", 0)
-    .attr("class", "tooltip")
+    .style("opacity", 2)
     .style("background-color", "white")
     .style("border", "solid")
     .style("border-width", "2px")
@@ -103,30 +101,32 @@ function gotData(incomingData) {
 
   var mouseover = function (event, d) {
     tooltip
-      .style("opacity", 1)
+      .style("opacity", 1);
     d3.select(this)
       .style("stroke", "black")
-      .style("opacity", 1)
+      .style("opacity", 1);
   }
   var mousemove = function (event, d) {
+    // var [x, y] = d3.pointer(event)
+    // console.log(x, y)
     tooltip
-      .html("Song: " + d.name + "<br/>" + "Release date: " + d.album_release_date)
-      .style("left", (event.pageX + 70) + "px")
+      .html("Song: " + d.name + "<br/>Artist: " + d.artists + "<br/>Release date: " + formatDate(d.album_release_date))
+      .style("left", (event.pageX+10) + "px")
       .style("top", (event.pageY) + "px")
   }
   var mouseleave = function (event, d) {
     tooltip
-      .style("opacity", 0)
+      .style("opacity", 0);
     d3.select(this)
       .style("stroke", "none")
-      .style("opacity", 0.8)
+      .style("opacity", 0.8);
   }
 
-  datagroups
+  datagroups.selectAll(".songCircle").data(d => [d]).enter()
     .append("circle")
-    .attr("class", "songCircle")
-    .attr("r", 5)
-    .attr("fill", d => colorScale(parseInt(d.daily_rank)))
+      .attr("class", "songCircle")
+      .attr("r", 5)
+      .attr("fill", d => colorScale(parseInt(d.daily_rank)))
     .on("mouseover", mouseover)
     .on("mousemove", mousemove)
     .on("mouseout", mouseleave);
