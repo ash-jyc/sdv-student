@@ -186,6 +186,7 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# Large files
+# Other files
+split_data.py
 *.csv
 # End of https://www.gitignore.io/api/vim,osx,node,windows
