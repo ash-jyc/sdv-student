@@ -134,7 +134,7 @@ function gotData(incomingData) {
 }
 
 function byCountry() {
-  d3.csv("universal_top_spotify_songs.csv").then(gotData);
+  d3.csv("universal_top_spotify_songs_US.csv").then(gotData);
 }
 
 window.byCountry = byCountry;
