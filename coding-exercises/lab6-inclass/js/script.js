@@ -235,7 +235,7 @@ let country_codes = [
   {"name": "Uganda", "code": "UG"},
   {"name": "Ukraine", "code": "UA"},
   {"name": "United Arab Emirates (the)", "code": "AE"},
-  {"name": "United Kingdom of Great Britain and Northern Ireland (the)", "code": "GB"},
+  {"name": "Great Britain", "code": "GB"},
   {"name": "United States Minor Outlying Islands (the)", "code": "UM"},
   {"name": "United States", "code": "US"},
   {"name": "Uruguay", "code": "UY"},
