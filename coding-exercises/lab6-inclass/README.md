@@ -7,4 +7,4 @@
 Move the CSV file to `lab6-inclass` folder. Do not change the name.
 
 ## Run the code
-Hypothetically, you should just be able to click the live server button, the one that says `Port: 5500` in the bottom right corner, and run the code.... You can type a 2 letter country code and it should output some dots. Then, you can hover to see basic information about the dot.
+Hypothetically, you should just be able to click the live server button, the one that says `Port: 5500` in the bottom right corner, and run the code.... You can type the name of the country into the box and submit and it should output data. If something's not showing up, just check the mapping inside the code.
