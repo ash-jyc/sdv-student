@@ -3,8 +3,8 @@ import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 
 // keys: "spotify_id","name","artists","daily_rank","daily_movement","weekly_movement","country","snapshot_date","popularity","is_explicit","duration_ms","album_name","album_release_date","danceability","energy","key","loudness","mode","speechiness","acousticness","instrumentalness","liveness","valence","tempo","time_signature"
 
-let w = 1200;
-let h = 800;
+let w = 1400;
+let h = 900;
 let paddingX = 100;
 let paddingY = 40;
 
