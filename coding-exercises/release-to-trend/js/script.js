@@ -1,5 +1,4 @@
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
-// import * as d3 from "https://d3js.org/d3.v4.js";
 
 // keys: "spotify_id","name","artists","daily_rank","daily_movement","weekly_movement","country","snapshot_date","popularity","is_explicit","duration_ms","album_name","album_release_date","danceability","energy","key","loudness","mode","speechiness","acousticness","instrumentalness","liveness","valence","tempo","time_signature"
 
@@ -168,15 +167,13 @@ function gotData(incomingData) {
   // CREATE SCALES
   let minExtent = d3.min(filteredDataSongFirstAppearance, d => d.time_to_trend);
   let maxExtent = d3.max(filteredDataSongFirstAppearance, d => d.time_to_trend);
+  
   let xScale = d3.scaleLinear().domain([0, maxExtent]).range([paddingX - 50, w - paddingX - 300]);
 
   let rankExtent = [20, 1];
   let yScale = d3.scaleLinear().domain(rankExtent).range([h - paddingY, paddingY]);
 
   let colorScale = d3.scaleLinear().domain([minExtent, maxExtent * 20]).range(["cyan", "magenta"]);
-
-  // CREATE AXES
-  // createAxes(xScale);
 
   // CREATE DATAGROUPS
   function getLocation(d) {
@@ -190,13 +187,6 @@ function gotData(incomingData) {
   let datagroups = vizGroup.selectAll(".datagroup").data(filteredDataSongFirstAppearance, d => d.name).enter()
     .append("g")
       .attr("class", "datagroup")
-
-  // vizGroup
-  //   .append("circle")
-  //   .attr("class", "baseCircle")
-  //   .attr("r", 2)
-  //   .attr("fill", "pink")
-  //   .attr("transform", "translate(" + xScale(0) + "," + yScale(10) + ")");
     
   datagroups
     .append("circle")
@@ -223,8 +213,6 @@ function gotData(incomingData) {
     .attr("fill", "none")
   ;
   
-  // create a color scale on the right that has the labels of the songs
-  // sort them by time_to_trend * daily_rank
   let sortedData = filteredDataSongFirstAppearance.sort((a, b) => a.time_to_trend * a.daily_rank - b.time_to_trend * b.daily_rank);
   let colorScaleData = sortedData.map(d => d.name);
   let colorScaleY = d3.scaleBand().domain(colorScaleData).range([paddingY, h - paddingY]);
@@ -253,25 +241,7 @@ function gotData(incomingData) {
     .attr("font-size", "10px")
     .attr("fill", "white")
     ;
-  // datagroups
-  //   .append("text")
-  //   .text(d => d.name)
-  //   .attr("x", 10)
-  //   .attr("y", 5)
-  //   .attr("font-family", "sans-serif")
-  //   .attr("font-size", "1em")
-  //   .attr("fill", "white")
-  //   .attr("transform", getLocation)
-  //   ;
 
 }
-
-// function createAxes(xScale) {
-//   let xAxisGroup = viz.append("g").attr("class", "xAxisGroup");
-//   let xAxis = d3.axisBottom(xScale);
-//   xAxisGroup.call(xAxis);
-//   xAxisGroup.attr("transform", "translate(0," + (h - paddingY + 10) + ")");
-
-// }
 
 d3.csv("data.csv").then(gotData);
