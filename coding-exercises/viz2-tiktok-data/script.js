@@ -337,7 +337,18 @@ function gotData(incomingData) {
     // console.log("currentDateData", currentDateData)
     // console.log("---\nthe currentDateData array now carries the data for year", currentDate);
 
+    let currentDateCountryCount = currentDateData.reduce(function (acc, d, i) {
+      if (acc[d.spotify_id]) {
+        acc[d.spotify_id].add(d.country);
+      } else {
+        acc[d.spotify_id] = new Set([d.country]);
+      }
+      return acc;
+    }, {});
 
+
+
+    console.log("currentDateCountryCount", currentDateCountryCount);
     // Below here is where your coding should take place! learn from lab 6:
     // https://github.com/leoneckert/critical-data-and-visualization-spring-2020/tree/master/labs/lab-6
     // the three steps in the comments below help you to know what to aim for here
@@ -375,14 +386,17 @@ function gotData(incomingData) {
     enteringGroups
       .append("circle")
       .attr("class", "songCircle")
-      .attr("r", d => sizeScale(countryCount[d.spotify_id].size))
-      .attr("fill", d => colorScale(countryCount[d.spotify_id].size))
+      .attr("r", d => {
+        console.log(sizeScale(currentDateCountryCount[d.spotify_id].size))
+        return sizeScale(currentDateCountryCount[d.spotify_id].size)
+      })
+      .attr("fill", d => colorScale(currentDateCountryCount[d.spotify_id].size))
       ;
 
     enteringGroups
       .append("text")
       .text(d => d.name)
-      .attr("x", d => sizeScale(countryCount[d.spotify_id].size) + 10)
+      .attr("x", d => sizeScale(currentDateCountryCount[d.spotify_id].size) + 10)
       .attr("y", 5)
       .attr("font-family", "sans-serif")
       .attr("font-size", "1em")
@@ -407,13 +421,17 @@ function gotData(incomingData) {
 
 
     // take care of updating elements
+    // TODO, size + color are not changing
     datagroups
       .transition()
       .delay(100)
       .ease(d3.easeLinear)
       .attr("transform", getLocation)
-      .attr("r", d => sizeScale(countryCount[d.spotify_id].size))
-      .attr("fill", d => colorScale(countryCount[d.spotify_id].size))
+      .attr("r", d => {
+        console.log(sizeScale(currentDateCountryCount[d.spotify_id].size))
+        return sizeScale(currentDateCountryCount[d.spotify_id].size)
+      })
+      .attr("fill", d => colorScale(currentDateCountryCount[d.spotify_id].size))
       ;
 
     // take care of exiting elements
