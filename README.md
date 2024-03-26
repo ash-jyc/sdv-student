@@ -21,7 +21,9 @@ This README.md file is written in Markdown syntax - here is a quick [intro](http
 
 * [ ] map of tiktok songs and which countries they trend in.
 * [ ] rank of one interesting song over time, leaving a line behind
+* [ ] slow down time, maybe smth like a pause button
 #### 2 - new trend extent
-* [ ] limit to one dimension
-* [ ] add hover, make all lines transparent, but then hover add color for line and song
+* [ ] limit to one dimension (remove rank)
+* [ ] add hover, make all lines transparent, but then hover add color for line and song. (can add song label at bottom of the song)
 * [ ] leave song label
+* [ ] filter out more songs
