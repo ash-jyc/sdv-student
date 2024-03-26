@@ -6,8 +6,8 @@ Hi! I am Ashley and in this repository I will develop my work for the *Storytell
 
 Among other things, I will link to Coding Exercises and Projects:
 
-- [coding exercise (placeholder)](coding-exercises/placeholder)
-- [cool project (placeholder)](projects/placeholder)
+- [coding exercise (placeholder)](coding-exercises/)
+- [cool project (placeholder)](projects/)
 - ...
 
 
@@ -25,5 +25,5 @@ This README.md file is written in Markdown syntax - here is a quick [intro](http
 #### 2 - new trend extent
 * [ ] limit to one dimension (remove rank)
 * [ ] add hover, make all lines transparent, but then hover add color for line and song. (can add song label at bottom of the song)
-* [ ] leave song label
+* [X] leave song label
 * [ ] filter out more songs
