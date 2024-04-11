@@ -137,16 +137,18 @@ function gotData(incomingData) {
   let formatDate = d3.timeFormat("%Y");
 
   function mapFunction(d) {
-    d.snapshot_date = formatDate(timeParser(d.snapshot_date));
-    d.album_release_date = formatDate(timeParser(d.album_release_date));
-    d.time_to_trend = parseInt(d.snapshot_date) - parseInt(d.album_release_date);
+    d.snapshot_date = timeParser(d.snapshot_date);
+    d.album_release_date = timeParser(d.album_release_date);
+    d.time_to_trend = Math.floor((d.snapshot_date - d.album_release_date)/(24*3600*1000*365));
+    d.snapshot_date = formatDate(d.snapshot_date);
+    d.album_release_date = formatDate(d.album_release_date);
     return d;
   }
 
   let filteredDataWithTime = incomingData.map(mapFunction);
 
   let filteredDataBefore2000 = filteredDataWithTime.filter(d =>
-    parseInt(d.album_release_date) <= parseInt(2000) && parseInt(d.album_release_date) > parseInt(1910) && parseInt(d.daily_rank) <= 20 && (
+    parseInt(d.album_release_date) <= parseInt(2000) && parseInt(d.album_release_date) > parseInt(1910) && parseInt(d.daily_rank) <= 15 && (
       // filter out christmas
       !christmasSongs.has(d.spotify_id) &&
       !d.name.includes("Christmas") &&
@@ -170,15 +172,17 @@ function gotData(incomingData) {
   
   let xScale = d3.scaleLinear().domain([0, maxExtent]).range([paddingX - 50, w - paddingX - 300]);
 
-  let rankExtent = [20, 1];
-  let yScale = d3.scaleLinear().domain(rankExtent).range([h - paddingY, paddingY]);
+  let colorScale = d3.scaleLinear().domain([minExtent, maxExtent]).range(["cyan", "magenta"]);
 
-  let colorScale = d3.scaleLinear().domain([minExtent, maxExtent * 20]).range(["cyan", "magenta"]);
-
+  buildXAxis(xScale);
   // CREATE DATAGROUPS
+
+  // problem: diff songs from the same album superimposing on each other (not that big of a problem)
   function getLocation(d) {
     let x = xScale(d.time_to_trend);
-    let y = yScale(d.daily_rank);
+    console.log(x);
+    // let y = yScale(d.daily_rank);
+    let y = h/2;
     return "translate(" + x + "," + y + ")";
   }
 
@@ -192,55 +196,120 @@ function gotData(incomingData) {
     .append("circle")
     .attr("class", "songCircle")
     .attr("r", 5)
-    .attr("fill", d => colorScale(d.time_to_trend * d.daily_rank))
+    .attr("fill", d => colorScale(d.time_to_trend))
     .attr("transform", getLocation);
     ;
   
   let line = d3.line()
     .x(d => xScale(d.time_to_trend))
-    .y(d => yScale(d.daily_rank))
+    .y(d => d.height)
     .curve(d3.curveBasis)
   ;
-    
+  
   datagroups
     .append("path")
+    .attr("class", "songLine")
     .attr("d", d => line([
-      {time_to_trend: 0, daily_rank: 20}, 
-      {time_to_trend: d.time_to_trend / 2, daily_rank: 2 + (d.daily_rank / 2)},
-      {time_to_trend: d.time_to_trend, daily_rank: d.daily_rank}]))
-    .attr("stroke", d => colorScale(d.time_to_trend * d.daily_rank))
+      {time_to_trend: 0, height: h/2}, 
+      {time_to_trend: d.time_to_trend / 2, height: 20},
+      {time_to_trend: d.time_to_trend, height: h/2}]))
+    .attr("stroke", d => colorScale(d.time_to_trend))
     .attr("stroke-width", 1)
     .attr("fill", "none")
   ;
   
-  let sortedData = filteredDataSongFirstAppearance.sort((a, b) => a.time_to_trend * a.daily_rank - b.time_to_trend * b.daily_rank);
+  let sortedData = filteredDataSongFirstAppearance.sort((a, b) => a.time_to_trend - b.time_to_trend);
   let colorScaleData = sortedData.map(d => d.name);
-  let colorScaleY = d3.scaleBand().domain(colorScaleData).range([paddingY, h - paddingY]);
+  let colorScaleY = d3.scaleBand().domain(colorScaleData).range([paddingY, h - paddingY - h/2]);
   let colorScaleX = w - paddingX - 250;
   let colorScaleHeight = 10;
   let colorScaleWidth = 20;
+  console.log(sortedData);
   
-  let colorScaleGroup = vizGroup.append("g").attr("class", "colorScaleGroup");
+  let colorScaleGroup = vizGroup.selectAll("colorScaleGroup").data(sortedData, d => d.name).enter()
+    .append("g")
+      .attr("class", "colorScaleGroup");
 
-  colorScaleGroup.selectAll(".colorScaleRect").data(sortedData).enter()
+  colorScaleGroup
     .append("rect")
     .attr("class", "colorScaleRect")
     .attr("x", colorScaleX)
-    .attr("y", d => colorScaleY(d.name))
+    .attr("y", d => colorScaleY(d.name) + 50)
     .attr("width", colorScaleWidth)
     .attr("height", colorScaleHeight)
-    .attr("fill", d => colorScale(d.time_to_trend * d.daily_rank))
+    .attr("fill", d => colorScale(d.time_to_trend))
 
-  colorScaleGroup.selectAll(".colorScaleText").data(sortedData).enter()
+  colorScaleGroup
     .append("text")
     .attr("class", "colorScaleText")
-    .text(d => d.name + ", " + d.time_to_trend + " years, " + d.country)
+    .text(d => d.name + ", " + Math.floor(d.time_to_trend) + " years, " + d.country)
     .attr("x", colorScaleX + colorScaleWidth + 5)
-    .attr("y", d => colorScaleY(d.name) + colorScaleHeight)
+    .attr("y", d => colorScaleY(d.name) + colorScaleHeight + 49)
     .attr("font-family", "sans-serif")
     .attr("font-size", "10px")
     .attr("fill", "white")
     ;
+
+  // INTERACTIONS
+  datagroups.on("mouseover", function(event, d) {
+    // change opacity of all 
+    datagroups.selectAll(".songCircle").attr("opacity", "0.2");
+    datagroups.selectAll(".songLine").attr("opacity", "0.2");
+    colorScaleGroup.selectAll(".colorScaleRect").attr("opacity", "0.2");
+    colorScaleGroup.selectAll(".colorScaleText").attr("opacity", "0.2");
+    let element = d3.select(this);
+    element.select(".songCircle").attr("opacity", "1");
+    element.select(".songLine").attr("opacity", "1");
+    colorScaleGroup.selectAll(".colorScaleRect").filter(e => e.name == d.name).attr("opacity", "1");
+    colorScaleGroup.selectAll(".colorScaleText").filter(e => e.name == d.name).attr("opacity", "1");
+  })
+  .on("mouseout", function(event, d) {
+    datagroups.selectAll(".songCircle").attr("opacity", "1");
+    datagroups.selectAll(".songLine").attr("opacity", "1");
+    colorScaleGroup.selectAll(".colorScaleRect").attr("opacity", "1");
+    colorScaleGroup.selectAll(".colorScaleText").attr("opacity", "1");
+  });
+
+  // do the same for colorscale group
+  colorScaleGroup.on("mouseover", function(event, d) {
+    datagroups.selectAll(".songCircle").attr("opacity", "0.2");
+    datagroups.selectAll(".songLine").attr("opacity", "0.2");
+    colorScaleGroup.selectAll(".colorScaleRect").attr("opacity", "0.2");
+    colorScaleGroup.selectAll(".colorScaleText").attr("opacity", "0.2");
+    let element = d3.select(this);
+    element.select(".colorScaleRect").attr("opacity", "1");
+    element.select(".colorScaleText").attr("opacity", "1");
+    datagroups.filter(e => e.name == d.name).selectAll(".songCircle").attr("opacity", "1");
+    datagroups.filter(e => e.name == d.name).selectAll(".songLine").attr("opacity", "1");
+  })
+  .on("mouseout", function(event, d) {
+    datagroups.selectAll(".songCircle").attr("opacity", "1");
+    datagroups.selectAll(".songLine").attr("opacity", "1");
+    colorScaleGroup.selectAll(".colorScaleRect").attr("opacity", "1");
+    colorScaleGroup.selectAll(".colorScaleText").attr("opacity", "1");
+  });
+}
+
+function buildXAxis(xScale) {
+  let xAxis = d3.axisBottom(xScale);
+  let xAxisGroup = viz.append("g").attr("class", "xaxis");
+  xAxisGroup.call(xAxis);
+  xAxisGroup
+    .attr("transform", "translate(0," + (h/2 - paddingY + 100) + ")");
+
+  // add color to xAxis, make it a gradient
+  let defs = viz.append("defs");
+  let linearGradient = defs.append("linearGradient")
+    .attr("id", "linear-gradient")
+  linearGradient.append("stop")
+    .attr("offset", "0%")
+    .attr("stop-color", "cyan");
+  linearGradient.append("stop")
+    .attr("offset", "100%")
+    .attr("stop-color", "magenta");
+  xAxisGroup.selectAll("path").attr("stroke", "url(#linear-gradient)");
+  xAxisGroup.selectAll("line").attr("stroke", "white");
+  xAxisGroup.selectAll("text").attr("fill", "white");
 
 }
 
