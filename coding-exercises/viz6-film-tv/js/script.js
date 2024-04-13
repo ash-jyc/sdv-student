@@ -1,6 +1,6 @@
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 
-const width = 900, height = 900;
+const width = 600, height = 600;
 const outerRadius = Math.min(450, 450) / 2 - 20; // Adjusted for visibility
 const innerRadius = 10; // Inner circle where visualization starts
 
