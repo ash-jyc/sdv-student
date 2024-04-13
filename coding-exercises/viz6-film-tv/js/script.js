@@ -111,6 +111,17 @@ function visualizeData(songData) {
             .style("text-anchor", "middle")
             .attr("alignment-baseline", "middle");
     });
+
+    // add date label
+    let dateFormat = d3.timeFormat("%B %-d, %Y")
+
+    svg.append("text")
+        .attr("x", 0)
+        .attr("y", -outerRadius - 60)
+        .text(dateFormat(songData[0].snapshot_date))
+        .style("text-anchor", "middle")
+        .attr("alignment-baseline", "middle");
+
 }
 
 // Sample invocation with your processedData
