@@ -19,7 +19,7 @@ function visualizeData(songData) {
     const angleScale = d3.scalePoint()
         .domain(countries)
         .range([0, 2 * Math.PI - (2 * Math.PI / countries.length)]);
-    
+
     const maxRank = 50; // d3.max(songData, d => parseInt(d.daily_rank));
     const radialScale = d3.scaleLinear()
         .domain([0, maxRank]) // Starts from 0 to include a line for the top rank
@@ -123,6 +123,19 @@ function visualizeData(songData) {
         .style("text-anchor", "middle")
         .attr("alignment-baseline", "middle");
 
+    // add song labels
+    svg.append("text")
+        .attr("x", -250)
+        .attr("y", outerRadius + 40)
+        .text("Unwritten")
+        .attr("fill", "blue")
+
+    svg.append("text")
+        .attr("x", -250)
+        .attr("y", outerRadius + 25)
+        .text("Murder On The Dancefloor")
+        .attr("fill", "red")
+
 }
 
 // Sample invocation with your processedData
@@ -155,7 +168,7 @@ function gotData(incomingData) {
         .attr("min", 0)
         .attr("max", dateIndices.length - 1)
         .attr("value", 0)
-        .on("input", function() {
+        .on("input", function () {
             const index = +this.value;
             if (index >= 0 && index < groupedByDate.length) {
                 const selectedData = groupedByDate[index][1];
@@ -170,19 +183,6 @@ function gotData(incomingData) {
     if (groupedByDate.length > 0) {
         updateVisualization(groupedByDate[0][1]); // visualize the first date initially
     }
-
-    // add song labels
-    svg.append("text")
-        .attr("x", -250)
-        .attr("y", outerRadius + 40)
-        .text("Unwritten")
-        .attr("fill", "blue")
-    
-    svg.append("text")
-        .attr("x", -250)
-        .attr("y", outerRadius + 25)
-        .text("Murder On The Dancefloor")
-        .attr("fill", "red")
 }
 
 function updateVisualization(songData) {
