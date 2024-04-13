@@ -170,6 +170,19 @@ function gotData(incomingData) {
     if (groupedByDate.length > 0) {
         updateVisualization(groupedByDate[0][1]); // visualize the first date initially
     }
+
+    // add song labels
+    svg.append("text")
+        .attr("x", -250)
+        .attr("y", outerRadius + 40)
+        .text("Unwritten")
+        .attr("fill", "blue")
+    
+    svg.append("text")
+        .attr("x", -250)
+        .attr("y", outerRadius + 25)
+        .text("Murder On The Dancefloor")
+        .attr("fill", "red")
 }
 
 function updateVisualization(songData) {
