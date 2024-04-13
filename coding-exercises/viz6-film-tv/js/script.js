@@ -44,7 +44,21 @@ function visualizeData(songData) {
     countries.forEach(country => {
         const countryData = songData.filter(d => d.country === country);
 
-        if (countryData.length === 2) { // Ensuring data for both songs is present
+        if (countryData.length < 2) {
+            const points = countryData.map(d => ({
+                x: Math.cos(angleScale(d.country) - Math.PI / 2) * radialScale(d.daily_rank),
+                y: Math.sin(angleScale(d.country) - Math.PI / 2) * radialScale(d.daily_rank),
+                color: colorMap[d.name]
+            }));
+            points.forEach(point => {
+                svg.append("circle")
+                    .attr("cx", point.x)
+                    .attr("cy", point.y)
+                    .attr("r", 5)
+                    .attr("fill", point.color);
+            });
+        }
+        else { //(countryData.length === 2) { // Ensuring data for both songs is present
             const points = countryData.map(d => ({
                 x: Math.cos(angleScale(d.country) - Math.PI / 2) * radialScale(d.daily_rank),
                 y: Math.sin(angleScale(d.country) - Math.PI / 2) * radialScale(d.daily_rank),
@@ -82,11 +96,11 @@ function visualizeData(songData) {
         // Determine the rotation direction for readability
         let rotation;
         if (angle > Math.PI / 2 && angle < 3 * Math.PI / 2) {
-        // Left side
-        rotation = (angle + Math.PI) * (180 / Math.PI);
+            // Left side
+            rotation = (angle + Math.PI) * (180 / Math.PI);
         } else {
-        // Right side
-        rotation = angle * (180 / Math.PI);
+            // Right side
+            rotation = angle * (180 / Math.PI);
         }
 
         svg.append("text")
@@ -108,7 +122,6 @@ function gotData(incomingData) {
     let filteredData = incomingData.filter(d =>
         d.name === "Unwritten" || d.name === "Murder On The Dancefloor");
 
-    // Aggregate or process your data here, for example, to find the most recent rank for each country
     let dateParser = d3.timeParse("%Y-%m-%d");
     function mapFunction(d) {
         d.snapshot_date = dateParser(d.snapshot_date);
@@ -116,12 +129,53 @@ function gotData(incomingData) {
     }
     let songDataDate = filteredData.map(mapFunction);
 
-    let dateData = d3.groups(songDataDate, d => d.snapshot_date)[0][1];
-    console.log(dateData);
-    // Assuming 'processedData' is your prepared dataset after processing
+    // Group data by date, then by country within each date
+    let groupedByDate = d3.groups(songDataDate, d => d.snapshot_date).reverse();
 
-    visualizeData(dateData);
+    // Create slider with date indices
+    const dateIndices = groupedByDate.map((d, idx) => ({
+        date: d[0],
+        index: idx
+    }));
+
+    // Set up slider in HTML
+    const slider = d3.select("#date-slider")
+        .attr("min", 0)
+        .attr("max", dateIndices.length - 1)
+        .attr("value", 0)
+        .on("input", function() {
+            const index = +this.value;
+            if (index >= 0 && index < groupedByDate.length) {
+                const selectedData = groupedByDate[index][1];
+                console.log("Selected data for index " + index + ":", selectedData);
+                updateVisualization(selectedData);
+            } else {
+                console.error("Slider index out of bounds or invalid data:", index);
+            }
+        });
+
+    // Initial visualization
+    if (groupedByDate.length > 0) {
+        updateVisualization(groupedByDate[0][1]); // visualize the first date initially
+    }
 }
 
-// Load your data then call drawVisualization(data);
-d3.csv("data.csv").then(gotData);
+function updateVisualization(songData) {
+    console.log("Data for visualization:", songData);
+    if (!Array.isArray(songData)) {
+        console.error("Expected an array for visualization, received:", typeof songData);
+        return; // Prevents further execution
+    }
+    svg.selectAll("*").remove(); // Clear existing SVG contents
+    visualizeData(songData); // Draw the visualization with the new data
+}
+
+
+// Assuming songData is your dataset enriched with a 'dateIndex' property
+// which could be an integer representing each unique date in your dataset
+// (e.g., 0 for the earliest date, 1 for the next, and so on)
+d3.csv("data.csv").then(data => {
+    // Process and enrich data with 'dateIndex' here
+    // Then call visualizeData with the initial subset of the data
+    gotData(data); // Assuming this function processes data and then calls visualizeData
+});
