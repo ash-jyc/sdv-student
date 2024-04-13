@@ -14,12 +14,13 @@ const svg = d3.select("#container").append("svg")
 
 function visualizeData(songData) {
     // Derive countries to create a scale for angles
-    const countries = Array.from(new Set(songData.map(d => d.country)));
+    const countries = Array.from(new Set(songData.map(d => d.country).filter(country => country != "")));
+    console.log(countries)
     const angleScale = d3.scalePoint()
         .domain(countries)
-        .range([0, 2 * Math.PI]);
-
-    const maxRank = d3.max(songData, d => parseInt(d.daily_rank));
+        .range([0, 2 * Math.PI - (2 * Math.PI / countries.length)]);
+    
+    const maxRank = 50; // d3.max(songData, d => parseInt(d.daily_rank));
     const radialScale = d3.scaleLinear()
         .domain([0, maxRank]) // Starts from 0 to include a line for the top rank
         .range([innerRadius, outerRadius]);
