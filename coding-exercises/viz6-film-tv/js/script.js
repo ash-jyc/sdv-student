@@ -229,7 +229,7 @@ function updateVisualization(songData) {
 // Assuming songData is your dataset enriched with a 'dateIndex' property
 // which could be an integer representing each unique date in your dataset
 // (e.g., 0 for the earliest date, 1 for the next, and so on)
-d3.csv("data.csv").then(data => {
+d3.csv("./universal_top_spotify_songs.csv").then(data => {
     // Process and enrich data with 'dateIndex' here
     // Then call visualizeData with the initial subset of the data
     gotData(data); // Assuming this function processes data and then calls visualizeData
