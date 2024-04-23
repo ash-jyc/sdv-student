@@ -2,13 +2,13 @@ import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 
 const width = 600, height = 600;
 const outerRadius = Math.min(450, 450) / 2 - 20; // Adjusted for visibility
-const innerRadius = 10; // Inner circle where visualization starts
+const innerRadius = 30; // Inner circle where visualization starts
 
 // Create SVG container
 const svg = d3.select("#container").append("svg")
     .attr("width", width)
     .attr("height", height)
-    .style("background-color", "lavender")
+    .style("background-color", "black")
     .append("g")
     .attr("transform", `translate(${width / 2}, ${height / 2})`);
 
@@ -25,8 +25,36 @@ function visualizeData(songData) {
         .domain([0, maxRank]) // Starts from 0 to include a line for the top rank
         .range([innerRadius, outerRadius]);
 
+    // Draw background circle, make it look like a record
+    // svg.append("circle")
+    //     .attr("cx", 0)
+    //     .attr("cy", 0)
+    //     .attr("r", outerRadius)
+    //     .style("fill", "black");
+    svg.append("circle")
+        .attr("cx", 0)
+        .attr("cy", 0)
+        .attr("r", innerRadius - 5)
+        .style("fill", "white");
+    svg.append("circle")
+        .attr("cx", 0)
+        .attr("cy", 0)
+        .attr("r", innerRadius - 10)
+        .style("fill", "black");
+    svg.append("circle")
+        .attr("cx", 0)
+        .attr("cy", 0)
+        .attr("r", innerRadius - 15)
+        .style("fill", "white");
+    svg.append("circle")
+        .attr("cx", 0)
+        .attr("cy", 0)
+        .attr("r", innerRadius - 20)
+        .style("fill", "black");
+
+
     // Draw rank guide circles
-    const rankLevels = 5; // Adjustable based on your needs
+    const rankLevels = 25; // Adjustable based on your needs
     const ranksPerLevel = maxRank / rankLevels;
 
     for (let i = 0; i <= rankLevels; i++) {
@@ -35,11 +63,11 @@ function visualizeData(songData) {
             .attr("cy", 0)
             .attr("r", radialScale(i * ranksPerLevel))
             .style("fill", "none")
-            .style("stroke", "lightgray")
+            .style("stroke", "gray")
             .style("stroke-dasharray", "2,2");
     }
 
-    const colorMap = { "Unwritten": "blue", "Murder On The Dancefloor": "red" };
+    const colorMap = { "Unwritten": "cyan", "Murder On The Dancefloor": "magenta" };
 
     // Draw dumbbells
     countries.forEach(country => {
@@ -72,7 +100,7 @@ function visualizeData(songData) {
                 .attr("y1", points[0].y)
                 .attr("x2", points[1].x)
                 .attr("y2", points[1].y)
-                .attr("stroke", "grey")
+                .attr("stroke", "white")
                 .attr("stroke-width", 1);
 
             // Draw points
@@ -110,7 +138,8 @@ function visualizeData(songData) {
             .attr("transform", `rotate(${rotation}, ${x}, ${y})`)
             .text(country)
             .style("text-anchor", "middle")
-            .attr("alignment-baseline", "middle");
+            .attr("alignment-baseline", "middle")
+            .attr("fill", "white");
     });
 
     // add date label
@@ -121,20 +150,21 @@ function visualizeData(songData) {
         .attr("y", -outerRadius - 60)
         .text(dateFormat(songData[0].snapshot_date))
         .style("text-anchor", "middle")
-        .attr("alignment-baseline", "middle");
+        .attr("alignment-baseline", "middle")
+        .attr("fill", "white");
 
     // add song labels
     svg.append("text")
         .attr("x", -250)
         .attr("y", outerRadius + 40)
         .text("Unwritten")
-        .attr("fill", "blue")
+        .attr("fill", colorMap["Unwritten"])
 
     svg.append("text")
         .attr("x", -250)
         .attr("y", outerRadius + 25)
         .text("Murder On The Dancefloor")
-        .attr("fill", "red")
+        .attr("fill", colorMap["Murder On The Dancefloor"])
 
 }
 
