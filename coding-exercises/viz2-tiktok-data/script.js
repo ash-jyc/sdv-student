@@ -14,6 +14,7 @@ let viz = d3.select("#container")
 let maxSpotify = 0;
 let maxTikTok = 0;
 
+// Benson-Boone-Beautiful-Things
 let datasets = ["Arctic-Monkeys-505", "Arctic-Monkeys-I-Wanna-Be-Yours", "Clairo-Sofia", "Laufey-From-The-Start", "TV-Girl-Cigarettes-Out-The-Window", "TV-Girl-Lovers-Rock", "TV-Girl-Not-Allowed"];
 let sources = ["Spotify", "TikTok"];
 let promises = [];
@@ -57,7 +58,6 @@ function gotData(dataResults, yScaleSpotify, yScaleTikTok) {
   console.log(dataResults)
   songGroup.each(function(songName) {
     let group = d3.select(this);
-    
 
     let tikTokData = dataResults.find(d => d.song === songName && d.source === "TikTok");
     if (tikTokData) {
@@ -82,43 +82,13 @@ function gotData(dataResults, yScaleSpotify, yScaleTikTok) {
     }
 
     let songLabel = group.append("text")
+      .attr("class", "song-label")
       .text(songName)
-      .attr("x", barWidth / 2 + barOffset + 20)
-      .attr("y", h - yPadding + 20)
-      .attr("text-anchor", "middle")
-      .attr("font-size", "12px")
-      .attr("fill", "#1DB954");
+      .attr("transform", "rotate(90)")
+      .attr("y", -xPadding + 15)
+      .attr("x", h - yPadding - 100)
+      .attr("text-anchor", "middle");
   });
-
-  
-  
-  // Draw bars for TikTok
-  // viz.selectAll(".tiktok-bar")
-  //   .data(dataResults.filter(d => d.source === "TikTok"))
-  //   .enter()
-  //   .append("rect")
-  //   .attr("class", "tiktok-bar")
-  //   .attr("x", (d, i) => xPadding + i * (barWidth * 2 + barOffset) + barWidth)
-  //   .attr("y", d => yScaleTikTok(d.max))
-  //   .attr("width", barWidth)
-  //   .attr("height", d => h - yPadding - yScaleTikTok(d.max))
-  //   .attr("fill", "#00F2C3")
-  //   .attr("transform", "translate(10, 10)"); // Offset for the shadow effect
-
-  // viz.selectAll(".song-label")
-  //   .attr("class", "song-label")
-  //   .data(dataResults.filter(d => d.source === "Spotify")
-  //     .map(d => d.song))
-  //   .enter()
-  //   .append("text")
-  //   .text(d => d)
-  //   .attr("x", (d, i) => xPadding + i * (barWidth * 2 + barOffset) + barWidth)
-  //   .attr("y", h - yPadding + 20)
-  //   .attr("transform", "rotate(-180)")
-  //   .attr("text-anchor", "middle")
-  //   .attr("font-size", "12px")
-  //   .attr("fill", "#1DB954");
-
 }
 
 function buildXAndYAxis(yScaleSpotify, yScaleTikTok) {
