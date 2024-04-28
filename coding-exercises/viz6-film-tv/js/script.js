@@ -176,7 +176,7 @@ function visualizeData(songData) {
 function gotData(incomingData) {
     let filteredData = incomingData.filter(d =>
         d.name === "Unwritten" || d.name === "Murder On The Dancefloor");
-
+    
     let dateParser = d3.timeParse("%Y-%m-%d");
     function mapFunction(d) {
         d.snapshot_date = dateParser(d.snapshot_date);
