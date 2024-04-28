@@ -2,10 +2,10 @@ import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 
 // keys: "spotify_id","name","artists","daily_rank","daily_movement","weekly_movement","country","snapshot_date","popularity","is_explicit","duration_ms","album_name","album_release_date","danceability","energy","key","loudness","mode","speechiness","acousticness","instrumentalness","liveness","valence","tempo","time_signature"
 
-let w = 1400;
-let h = 900;
+let w = 900;
+let h = 400;
 let paddingX = 100;
-let paddingY = 40;
+let paddingY = 10;
 
 let christmasSongs = new Set([
   "2EjXfH91m7f8HiJN1yQg97",
@@ -122,12 +122,14 @@ let christmasSongs = new Set([
   "6ImuFqEAZf9dkpuYahSr0K",
 ]);
 
-let viz = d3.select("#container")
+let vizContainer = d3.select("#viz1");
+let viz = vizContainer
   .append("svg")
-  .attr("class", "viz")
-  .attr("width", w)
-  .attr("height", h)
-  .style("background-color", "black")
+    // .attr("width", w)
+    // .attr("height", h)
+    .style("background-color", "black")
+    .attr("preserveAspectRatio", "xMinYMin meet")
+    .attr("viewBox", "0 0 " + w + " " + h)
   ;
 
 
@@ -182,13 +184,13 @@ function gotData(incomingData) {
     let x = xScale(d.time_to_trend);
     console.log(x);
     // let y = yScale(d.daily_rank);
-    let y = h/2;
+    let y = h - 40;
     return "translate(" + x + "," + y + ")";
   }
 
-  let vizGroup = viz.append("g").attr("class", "vizGroup");
+  // let viz = viz.append("g").attr("class", "viz");
 
-  let datagroups = vizGroup.selectAll(".datagroup").data(filteredDataSongFirstAppearance, d => d.name).enter()
+  let datagroups = viz.selectAll(".datagroup").data(filteredDataSongFirstAppearance, d => d.name).enter()
     .append("g")
       .attr("class", "datagroup")
     
@@ -210,9 +212,9 @@ function gotData(incomingData) {
     .append("path")
     .attr("class", "songLine")
     .attr("d", d => line([
-      {time_to_trend: 0, height: h/2}, 
-      {time_to_trend: d.time_to_trend / 2, height: 20},
-      {time_to_trend: d.time_to_trend, height: h/2}]))
+      {time_to_trend: 0, height: h - 40}, 
+      {time_to_trend: d.time_to_trend / 2, height: -h/2 + 40},
+      {time_to_trend: d.time_to_trend, height: h - 40}]))
     .attr("stroke", d => colorScale(d.time_to_trend))
     .attr("stroke-width", 1)
     .attr("fill", "none")
@@ -220,13 +222,13 @@ function gotData(incomingData) {
   
   let sortedData = filteredDataSongFirstAppearance.sort((a, b) => a.time_to_trend - b.time_to_trend);
   let colorScaleData = sortedData.map(d => d.name);
-  let colorScaleY = d3.scaleBand().domain(colorScaleData).range([paddingY, h - paddingY - h/2]);
+  let colorScaleY = d3.scaleBand().domain(colorScaleData).range([paddingY - 50, h - paddingY - 50]);
   let colorScaleX = w - paddingX - 250;
   let colorScaleHeight = 10;
   let colorScaleWidth = 20;
   console.log(sortedData);
   
-  let colorScaleGroup = vizGroup.selectAll("colorScaleGroup").data(sortedData, d => d.name).enter()
+  let colorScaleGroup = viz.selectAll("colorScaleGroup").data(sortedData, d => d.name).enter()
     .append("g")
       .attr("class", "colorScaleGroup");
 
@@ -295,7 +297,7 @@ function buildXAxis(xScale) {
   let xAxisGroup = viz.append("g").attr("class", "xaxis");
   xAxisGroup.call(xAxis);
   xAxisGroup
-    .attr("transform", "translate(0," + (h/2 - paddingY + 100) + ")");
+    .attr("transform", "translate(0," + (h - 20) + ")");
 
   // add color to xAxis, make it a gradient
   let defs = viz.append("defs");

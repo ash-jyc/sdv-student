@@ -1,13 +1,40 @@
-body {
-  width: 100%;
-  height: 100%;
+body{
   margin: 0;
+  background-color: black;
+  color: white;
+  font-family: sans-serif;
 }
 
-.viz {
-  border: 1px black solid;
+.mainContainer{
+  width:100%;
+  max-width: 900px;
+  outline: 1px solid black;
+  margin: auto;
+
 }
 
-.songLabel {
-  font-size: 10px;
+.heading{
+  text-align: center;
+  /* background-color: beige; */
+  margin-bottom: 100px;
+}
+
+.articleWrapper{
+  width:100%;
+  max-width: 550px;
+  outline: 1px solid black;
+  margin: auto;
+  padding: 0 5px;
+  box-sizing: border-box;
+}
+
+.graphBox{
+  margin: 60px 0;
+}
+.graphBox img{
+  width: 100%;
+}
+.graphBox .caption{
+  font-size: 0.8em;
+  margin:0;
 }
