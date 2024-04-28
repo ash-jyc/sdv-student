@@ -89,11 +89,11 @@ d3.json("custom.geo.json").then(function (geoData) {
         console.log(dataTourDates)
 
         let filteredDataWithTime = dataTourDates.map(mapFunction);
-        filteredDataWithTime = filteredDataWithTime.filter(d =>
-            d.album_release_date < timeParser("2020-01-01")
-        );
+        // filteredDataWithTime = filteredDataWithTime.filter(d =>
+        //     d.album_release_date < timeParser("2020-01-01")
+        // );
 
-        let groupedData = d3.group(dataTourDates, d => timeFormatter(d.snapshot_date));
+        let groupedData = d3.group(filteredDataWithTime, d => timeFormatter(d.snapshot_date));
         // check that date is in tour
         console.log("groupedData")
         console.log(groupedData)
@@ -111,7 +111,7 @@ d3.json("custom.geo.json").then(function (geoData) {
             .attr("d", pathMaker)
             .attr("fill", "gray")
             .attr("opacity", function (d, i) {
-                if (spotifyCountries.includes(d.properties.iso_a2)) {
+                if (spotifyCountries.includes(d.properties.postal)) {
                     return 1
                 } else {
                     return 0.2
@@ -128,16 +128,16 @@ d3.json("custom.geo.json").then(function (geoData) {
 
             viz.selectAll(".country")
                 .attr("fill", function (d, i) {
-                    if (tourDetails.find(t => t.date === tourDate).country === d.properties.iso_a2){
+                    if (tourDetails.find(t => t.date === tourDate).country === d.properties.postal){
                         return "pink"
-                    } else if (activeCountryCodes.includes(d.properties.iso_a2)) {
+                    } else if (activeCountryCodes.includes(d.properties.postal)) {
                         return "blue"
                     } else {
                         return "gray"
                     }
                 })
                 .attr("opacity", function (d, i) {
-                    if (activeCountryCodes.includes(d.properties.iso_a2)) {
+                    if (activeCountryCodes.includes(d.properties.postal)) {
                         return 1
                     } else {
                         return 0.2
