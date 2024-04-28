@@ -1,0 +1,69 @@
+body{
+    margin: 0;
+}
+
+.mainContainer{
+    width:100%;
+    max-width: 900px;
+    outline: 1px solid black;
+    margin: auto;
+
+}
+
+.heading{
+    text-align: center;
+    background-color: beige;
+}
+
+.articleWrapper{
+    width:100%;
+    max-width: 550px;
+    outline: 1px solid black;
+    margin: auto;
+    padding: 0 5px;
+    box-sizing: border-box;
+}
+
+.graphBox{
+    outline: 5px blue dashed;
+}
+.graphBox img{
+    width: 100%;
+}
+.graphBox .caption{
+    font-size: 0.8em;
+    margin:0;
+}
+
+
+#viz-stickyBox{
+    position: sticky;
+    top:10px;
+    z-index: -1;
+}
+#viz1-stick-passersby{
+    outline: 12px solid rgba(255, 166, 0, 0.636);
+    /* background-color: rgba(255, 166, 0, 0.34); */
+}
+
+.spacer-10{
+    height:10vh;
+    /* background-color: rgba(255, 166, 0, 0.34); */
+
+}
+.spacer-50{
+    height:50vh;
+    /* background-color: rgba(255, 166, 0, 0.34); */
+
+}
+.spacer-100{
+    height:50vh;
+    /* background-color: rgba(255, 166, 0, 0.34); */
+}
+
+.song-label {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin: 50px 0 10px;
+    padding-top: 30%;
+}
