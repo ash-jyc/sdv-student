@@ -15,7 +15,7 @@ let maxSpotify = 0;
 let maxTikTok = 0;
 
 // Benson-Boone-Beautiful-Things
-let datasets = ["Arctic-Monkeys-505", "Arctic-Monkeys-I-Wanna-Be-Yours", "Clairo-Sofia", "Laufey-From-The-Start", "TV-Girl-Cigarettes-out-the-Window", "TV-Girl-Lovers-Rock", "TV-Girl-Not-Allowed"];
+let datasets = ["Arctic-Monkeys-I-Wanna-Be-Yours", "Clairo-Sofia", "Laufey-From-The-Start", "TV-Girl-Cigarettes-out-the-Window", "TV-Girl-Lovers-Rock", "TV-Girl-Not-Allowed"];
 let sources = ["Spotify", "TikTok"];
 let promises = [];
 let dataResults = [];
