@@ -1,4 +1,4 @@
-import "../../d3.v7.min.js";
+import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 
 let w = 900;
 let h = 900;
