@@ -389,4 +389,4 @@ function buildXAxis(xScale) {
 
 }
 
-d3.csv("../viz1-release-to-trend/before2001.csv").then(gotData);
+d3.csv("../datasets/before2001.csv").then(gotData);
