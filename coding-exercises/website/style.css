@@ -1,5 +1,35 @@
 body{
   margin: 0;
+  background-color: black;
+  color: white;
+  font-family: sans-serif;
+}
+
+.mainContainer{
+  width:100%;
+  max-width: 900px;
+  outline: 1px solid black;
+  margin: auto;
+
+}
+
+body{
+  margin: 0;
+  background-color: black;
+  color: white;
+  font-family: sans-serif;
+}
+
+body{
+  margin: 0;
+}
+
+text {
+  color: white;
+}
+
+p {
+  color: white;
 }
 
 .mainContainer{
@@ -12,7 +42,7 @@ body{
 
 .heading{
   text-align: center;
-  background-color: beige;
+  /* background-color: beige; */
 }
 
 .articleWrapper{
@@ -66,4 +96,16 @@ body{
   font-weight: bold;
   margin: 50px 0 10px;
   padding-top: 30%;
+}
+
+#slider-container {
+  width: 50%;
+  max-width: 500px;
+  margin: auto;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+#date-slider {
+  width: 100%;
 }
