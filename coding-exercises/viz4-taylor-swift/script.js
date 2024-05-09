@@ -170,7 +170,8 @@ function updateGraph(dataToShow, step) {
     .append("circle")
       .attr("r", d => sizeScale(d.daily_rank))
       .attr("class", "seagull")
-      .attr("fill", d => d.group === "song1" ? "#b88ea2" : "#8eacb8")
+      .attr("fill", d => d.group === "song1" ? "magenta" : "cyan")
+      // .attr("fill", d => d.group === "song1" ? "#b88ea2" : "#8eacb8")
       .attr("opacity", d => opacityScale(d.daily_rank));
 
   let radius = 130;
