@@ -1,33 +1,45 @@
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 
-// keys: "spotify_id","name","artists","daily_rank","daily_movement","weekly_movement","country","snapshot_date","popularity","is_explicit","duration_ms","album_name","album_release_date","danceability","energy","key","loudness","mode","speechiness","acousticness","instrumentalness","liveness","valence","tempo","time_signature"
-
 let w = 900;
-let h = 600;
-// let xPadding = 50;
-// let yPadding = 50;
+let h = 400;
 
-let viz = d3.select("#viz1")
+let vizContainer = d3.select("#viz4");
+let viz = vizContainer
   .append("svg")
-  .attr("width", w)
-  .attr("height", h)
-  .style("background-color", "lavender")
+    .attr("preserveAspectRatio", "xMinYMin meet")
+    .attr("viewBox", "0 0 " + w + " " + h)
   ;
 
-// viz.append("line")
-//   .attr("x1", w / 2)
-//   .attr("y1", 30)
-//   .attr("x2", w / 2)
-//   .attr("y2", h - 30)
-//   .style("stroke", "gray")
-//   .style("stroke-width", 2);
-
+// add simulation
 let sim = d3.forceSimulation()
   .force("x", d3.forceX(w / 2))
   .force("y", d3.forceY(h / 2))
   .force("collide", d3.forceCollide(9))
-  .force("center", d3.forceCenter(w / 2, h / 2)) // offset the center of our system
-;
+  .force("charge", d3.forceManyBody().strength(0.5))
+  .alphaDecay(0.01)
+
+// add group centers
+const groupCenters = {
+  'song1': { x: w / 2 - w / 4, y: h / 2 },
+  'song2': { x: w / 2 + w / 4, y: h / 2 }
+};
+
+viz.append("text")
+    .attr("class", "version-label")
+    .text("Original")
+    .attr("text-anchor", "middle") // Center the text
+    .attr("x", groupCenters.song1.x)
+    .attr("y", h - h/50)
+    .attr("fill", "white");
+
+viz.append("text")
+    .attr("class", "version-label")
+    .text("Taylor's Version")
+    .attr("text-anchor", "middle") // Center the text
+    .attr("x", groupCenters.song2.x)
+    .attr("y", h - h/50)
+    .attr("fill", "white");
+
 
 function gotData(incomingData) {
 
@@ -99,7 +111,7 @@ function gotData(incomingData) {
 
 
   enterView({
-    selector: '.viz1-step2',
+    selector: '.viz4-step2',
     enter: function (el) {
 
       let dataToShow = data.filter(d => d.step == 1)
@@ -117,21 +129,23 @@ function gotData(incomingData) {
 
 }
 
-function setup() {
-  const groupCenters = {
-    'song1': { x: w / 2 - w / 4, y: h / 2 },
-    'song2': { x: w / 2 + w / 4, y: h / 2 }
-  };
-
-  return groupCenters;
-}
-
 function updateGraph(dataToShow, step) {
   const song = dataToShow[0].song;
   const songData = dataToShow[0].songData;
-  const nodes1 = songData[0].data.map(d => ({...d, group: 'song1'}));
-  const nodes2 = songData[1].data.map(d => ({...d, group: 'song2'}));
+  const nodes1 = songData[0].data.map(d => ({
+    ...d, 
+    group: 'song1',
+    x: groupCenters.song1.x,
+    y: groupCenters.song1.y
+  }));
+  const nodes2 = songData[1].data.map(d => ({
+    ...d, 
+    group: 'song2',
+    x: groupCenters.song2.x,
+    y: groupCenters.song2.y
+  }));
   const combinedNodes = nodes1.concat(nodes2);
+  console.log("combinedNodes", combinedNodes)
 
   // add a label for which song
   viz.selectAll(".song-label").remove();
@@ -140,63 +154,70 @@ function updateGraph(dataToShow, step) {
     .text(song)
     .attr("x", w / 2)
     .attr("y", 20)
-    .attr("text-anchor", "middle");
+    .attr("text-anchor", "middle")
+    // color white
+    .attr("fill", "white");
   
-  const groupCenters = setup();
-
+  // console.log(dataToShow)
   let nodes = viz.selectAll(".seagull")
     .data(combinedNodes, d => d.id + d.group);
 
-  let opacityScale = d3.scaleLinear().domain([50, 25, 1]).range([0.2, 0.2, 1]);
-  let sizeScale = d3.scaleLinear().domain([50, 25, 1]).range([30, 30, 50]);
+  let opacityScale = d3.scaleLinear().domain([50, 25, 1]).range([0.5, 0.5, 1]);
+  let sizeScale = d3.scaleLinear().domain([50, 25, 1]).range([7, 7, 20]);
+
 
   nodes.enter()
-    .append("svg:image")
-      .attr("xlink:href", d => d.album_name.includes("(Taylor's Version)") ? "gull-1.svg" : "gull-2.svg")
-      .attr("width", d => sizeScale(d.daily_rank))
-      .attr("height", d => sizeScale(d.daily_rank))
+    .append("circle")
+      .attr("r", d => sizeScale(d.daily_rank))
       .attr("class", "seagull")
-      .attr("opacity", d => opacityScale(d.daily_rank))
-      .attr("x", d => groupCenters[d.group].x) // Start off-screen left or right
-      .attr("y", d => groupCenters[d.group].y) // Start in the middle vertically
-    .merge(nodes)
-    .transition() // Transition to Step 2 positions
-      .attr("x", d => groupCenters[d.group].x)
-      .attr("y", d => groupCenters[d.group].y);
+      .attr("fill", d => d.group === "song1" ? "#b88ea2" : "#8eacb8")
+      .attr("opacity", d => opacityScale(d.daily_rank));
 
+  let radius = 130;
+  viz.append("circle")
+    .attr("class", "group-circle")
+    .attr("cx", groupCenters.song1.x)
+    .attr("cy", groupCenters.song1.y)
+    .attr("r", radius)
+    .attr("stroke", "white")
+    .attr("stroke-width", 2)
+    .attr("fill", "none")
+    .attr("stroke-dasharray", "5,5")
+    .attr("opacity", 0.5);
+
+  viz.append("circle")
+    .attr("class", "group-circle")
+    .attr("cx", groupCenters.song2.x)
+    .attr("cy", groupCenters.song2.y)
+    .attr("r", radius)
+    .attr("stroke", "white")
+    .attr("stroke-width", 2)
+    .attr("fill", "none")
+    .attr("stroke-dasharray", "5,5")
+    .attr("opacity", 0.5);
+  // remove nodes that are not in the data
   nodes.exit().remove();
 
   // add labels or taylor's version and original
-  viz.selectAll(".version-label").remove();
-  viz.append("text")
-    .attr("class", "version-label")
-    .text("Original")
-    .attr("x", groupCenters.song1.x - 20)
-    .attr("y", h - 50)
+// Correct text-anchor and alignment
 
-  viz.append("text")
-    .attr("class", "version-label")
-    .text("Taylor's Version")
-    .attr("x", groupCenters.song2.x - 20)
-    .attr("y", h - 50)
-    .attr("text-anchor", "end");
-
+// Assuming groupCenters are correctly calculated to center the nodes
   sim.nodes(combinedNodes)
     .force("x", d3.forceX(d => groupCenters[d.group].x))
     .force("y", d3.forceY(d => groupCenters[d.group].y))
+    .on("tick", ticked)
     .alpha(1)
-    .restart()
-    .on("tick", ticked);
+    .restart();
 
 }
 
 
 function ticked() {
   viz.selectAll(".seagull")
-    .attr("x", d => d.x)
-    .attr("y", d => d.y);
+    .attr("cx", d => d.x)
+    .attr("cy", d => d.y);
 }
 
 
 // load data
-d3.csv("taylorSwift1989.csv").then(gotData);
+d3.csv("../viz4-taylor-swift/taylorSwift1989.csv").then(gotData);

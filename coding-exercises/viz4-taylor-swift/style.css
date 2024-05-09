@@ -67,3 +67,8 @@ body{
     margin: 50px 0 10px;
     padding-top: 30%;
 }
+
+h2 {
+    /* text color white */
+    color: white;
+}
