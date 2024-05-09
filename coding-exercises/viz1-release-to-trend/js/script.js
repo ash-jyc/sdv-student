@@ -122,11 +122,84 @@ let christmasSongs = new Set([
   "6ImuFqEAZf9dkpuYahSr0K",
 ]);
 
+let countries = {
+  "AE": "UAE",
+  "AR": "Argentina",
+  "AT": "Austria",
+  "AU": "Australia",
+  "BE": "Belgium",
+  "BG": "Bulgaria",
+  "BO": "Bolivia",
+  "BR": "Brazil",
+  "BY": "Belarus",
+  "CA": "Canada",
+  "CH": "Switzerland",
+  "CL": "Chile",
+  "CO": "Colombia",
+  "CR": "Costa Rica",
+  "CZ": "Czechia",
+  "DE": "Germany",
+  "DK": "Denmark",
+  "DO": "Dominican Republic",
+  "EC": "Ecuador",
+  "EE": "Estonia",
+  "EG": "Egypt",
+  "ES": "Spain",
+  "FI": "Finland",
+  "FR": "France",
+  "GB": "UK",
+  "GR": "Greece",
+  "GT": "Guatemala",
+  "HK": "Hong Kong",
+  "HN": "Honduras",
+  "HU": "Hungary",
+  "ID": "Indonesia",
+  "IE": "Ireland",
+  "IL": "Israel",
+  "IN": "India",
+  "IS": "Iceland",
+  "IT": "Italy",
+  "JP": "Japan",
+  "KR": "South Korea",
+  "KZ": "Kazakhstan",
+  "LT": "Lithuania",
+  "LU": "Luxembourg",
+  "LV": "Latvia",
+  "MA": "Morocco",
+  "MX": "Mexico",
+  "MY": "Malaysia",
+  "NG": "Nigeria",
+  "NI": "Nicaragua",
+  "NL": "Netherlands",
+  "NO": "Norway",
+  "NZ": "New Zealand",
+  "PA": "Panama",
+  "PE": "Peru",
+  "PH": "Philippines",
+  "PK": "Pakistan",
+  "PL": "Poland",
+  "PT": "Portugal",
+  "PY": "Paraguay",
+  "RO": "Romania",
+  "SA": "Saudi Arabia",
+  "SE": "Sweden",
+  "SG": "Singapore",
+  "SK": "Slovakia",
+  "SV": "El Salvador",
+  "TH": "Thailand",
+  "TR": "Turkey",
+  "TW": "Taiwan",
+  "UA": "Ukraine",
+  "US": "USA",
+  "UY": "Uruguay",
+  "VE": "Venezuela",
+  "VN": "Vietnam",
+  "ZA": "South Africa"
+}
+
 let vizContainer = d3.select("#viz1");
 let viz = vizContainer
   .append("svg")
-    // .attr("width", w)
-    // .attr("height", h)
     .style("background-color", "black")
     .attr("preserveAspectRatio", "xMinYMin meet")
     .attr("viewBox", "0 0 " + w + " " + h)
@@ -134,8 +207,9 @@ let viz = vizContainer
 
 
 function gotData(incomingData) {
-  // let timeParser = d3.timeParse("%Y-%m-%d");
-  let timeParser = d3.timeParse("%Y");
+
+  let timeParser = d3.timeParse("%Y-%m-%d");
+  console.log(incomingData)
   let formatDate = d3.timeFormat("%Y");
 
   function mapFunction(d) {
@@ -150,7 +224,7 @@ function gotData(incomingData) {
   let filteredDataWithTime = incomingData.map(mapFunction);
 
   let filteredDataBefore2000 = filteredDataWithTime.filter(d =>
-    parseInt(d.album_release_date) <= parseInt(2000) && parseInt(d.album_release_date) > parseInt(1910) && parseInt(d.daily_rank) <= 15 && (
+    parseInt(d.album_release_date) <= parseInt(1990) && parseInt(d.album_release_date) > parseInt(1910) && parseInt(d.daily_rank) <= 15 && (
       // filter out christmas
       !christmasSongs.has(d.spotify_id) &&
       !d.name.includes("Christmas") &&
@@ -244,7 +318,7 @@ function gotData(incomingData) {
   colorScaleGroup
     .append("text")
     .attr("class", "colorScaleText")
-    .text(d => d.name + ", " + Math.floor(d.time_to_trend) + " years, " + d.country)
+    .text(d => d.name + ", " + Math.floor(d.time_to_trend) + " years, " + countries[d.country])
     .attr("x", colorScaleX + colorScaleWidth + 5)
     .attr("y", d => colorScaleY(d.name) + colorScaleHeight + 49)
     .attr("font-family", "sans-serif")
@@ -315,4 +389,4 @@ function buildXAxis(xScale) {
 
 }
 
-d3.csv("data.csv").then(gotData);
+d3.csv("../viz1-release-to-trend/before2001.csv").then(gotData);
