@@ -46,7 +46,7 @@ let tourDetails = [
 ]
 
 d3.json("../viz3-tour-map/custom.geo.json").then(function (geoData) {
-    d3.csv("../viz3-tour-map/coldplay-data.csv").then(function (incomingData) {
+    d3.csv("../datasets/coldplayOnly.csv").then(function (incomingData) {
         // console.log("geoData", geoData);
 
         // filter Coldplay data

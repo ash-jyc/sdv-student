@@ -221,4 +221,4 @@ function ticked() {
 
 
 // load data
-d3.csv("../viz4-taylor-swift/taylorSwift1989.csv").then(gotData);
+d3.csv("../datasets/taylorOnly.csv").then(gotData);
