@@ -19,6 +19,7 @@ let viz = vizContainer.append("svg")
 
 let mapLayer = viz.append("g").attr("class", "map");
 let tourLayer = viz.append("g").attr("class", "tour");
+let legendLayer = viz.append("g").attr("class", "legend");
 
 let dateText = viz.append("text")
     .attr("class", "tour-date")
@@ -31,6 +32,40 @@ let dateText = viz.append("text")
     .attr("alignment-baseline", "middle")
     .attr("fill", "white")
 
+let legendData = [
+    {
+        "color" : "rgb(156, 136, 235)",
+        "title" : "Touring and Trending"
+    },
+    {
+        "color" : "magenta",
+        "title" : "Touring Only"
+    },
+    {
+        "color" : "cyan",
+        "title" : "Trending Only"
+    }
+]
+
+let legendGroup = legendLayer.selectAll(".legend").data(legendData).enter();
+
+legendGroup
+    .append("rect")
+    .attr("class", "legendRect")
+    .attr("width", 25)
+    .attr("height", 12)
+    .attr("fill", d => d.color)
+    .attr("x", 100)
+    .attr("y", (d, i) => 400 + (12*i))
+
+legendGroup
+    .append("text")
+    .attr("class", "legendLabel")
+    .text(d => d.title)
+    .attr("fill", "white")
+    .attr("x", 130)
+    .attr("y", (d, i) => 412 + (12*i))
+    .attr("font-size", "12px")
 
 // fix time
 let timeParser = d3.timeParse("%Y-%m-%d")
@@ -152,18 +187,18 @@ d3.json("../viz3-tour-map/custom.geo.json").then(function (geoData) {
         function updateMapForDate(tourDate) {
 
             let currentData = groupedData.get(tourDate);
-            console.log("currentData", currentData)
+            // console.log("currentData", currentData)
             // make current tour country a different color
             let activeCountryCodes = currentData.map(d => d.country);
-            console.log("activeCountryCodes", activeCountryCodes)
+            // console.log("activeCountryCodes", activeCountryCodes)
 
             // console.log("an active country", activeCountryCodes.includes("d.properties.postal"))
             // console.log("find tour", tourDetails.find(tour => timeFormatter(tour.date)))
-            console.log("this should be magenta", tourDetails.find(tour => timeFormatter(tour.date) === timeFormatter(tourDate) && tour.country === "JP"))
+            // console.log("this should be magenta", tourDetails.find(tour => timeFormatter(tour.date) === timeFormatter(tourDate) && tour.country === "JP"))
 
             mapLayer.selectAll(".country")
                 .attr("fill", function (d, i) {
-                    console.log(d)
+                    // console.log(d)
                     if (activeCountryCodes.includes(d.properties.postal) && (tourDetails.find(tour => timeFormatter(tour.date) === timeFormatter(tourDate) && tour.country === d.properties.postal))) {
                         return "rgb(156, 136, 235)"
                     } else if (activeCountryCodes.includes(d.properties.postal)) {
