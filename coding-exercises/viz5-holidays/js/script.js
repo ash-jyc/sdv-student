@@ -194,7 +194,7 @@ function gotData(incomingDatasets) {
       if (d == "cyan") {
         return "All I Want For Christmas Is You"
       } else {
-        return "Ya Leilat El Eid Spotify"
+        return "Ya Leilat El Eid"
       }
     })
 
