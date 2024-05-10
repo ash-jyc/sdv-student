@@ -123,7 +123,7 @@ function gotData(incomingData) {
       console.log("exit", dataToShow)
       updateGraph(dataToShow)
     },
-    offset: 0.5, // enter at middle of viewport
+    offset: 0.25, // enter at middle of viewport
   });
 
 

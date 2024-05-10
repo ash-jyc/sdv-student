@@ -1,7 +1,7 @@
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 
 let w = 900;
-let h = 900;
+let h = 650;
 
 let vizContainer = d3.select("#viz5")
 let viz = vizContainer

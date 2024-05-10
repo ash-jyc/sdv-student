@@ -5,14 +5,6 @@ body{
   font-family: sans-serif;
 }
 
-.mainContainer{
-  width:100%;
-  max-width: 900px;
-  outline: 1px solid black;
-  margin: auto;
-
-}
-
 body{
   margin: 0;
   background-color: black;
@@ -32,6 +24,10 @@ p {
   color: white;
 }
 
+a {
+  color: rgb(255, 24, 224);
+}
+
 .mainContainer{
   width:100%;
   max-width: 900px;
@@ -42,35 +38,41 @@ p {
 
 .heading{
   text-align: center;
+  margin: 100px 0;
   /* background-color: beige; */
 }
 
 .articleWrapper{
   width:100%;
-  max-width: 550px;
+  max-width: 700px;
   outline: 1px solid black;
   margin: auto;
   padding: 0 5px;
   box-sizing: border-box;
 }
 
-.graphBox img{
-  width: 100%;
+#imageWrapper img{
+  width: 50%;
+
 }
+/* .graphBox img{
+  width: 50%;
+  display: flex;
+} */
 .graphBox .caption{
   font-size: 0.8em;
   margin:0;
+}
+.graphBox{
+  margin: 80px 0;
+
 }
 
 
 #viz-stickyBox{
   position: sticky;
-  top:10px;
+  top:30px;
   z-index: -1;
-}
-#viz1-stick-passersby{
-  outline: 12px solid rgba(255, 166, 0, 0.636);
-  /* background-color: rgba(255, 166, 0, 0.34); */
 }
 
 .spacer-10{

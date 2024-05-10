@@ -56,7 +56,7 @@ legendGroup
     .attr("height", 12)
     .attr("fill", d => d.color)
     .attr("x", 100)
-    .attr("y", (d, i) => 400 + (12*i))
+    .attr("y", (d, i) => 420 + (12*i))
 
 legendGroup
     .append("text")
@@ -64,7 +64,7 @@ legendGroup
     .text(d => d.title)
     .attr("fill", "white")
     .attr("x", 130)
-    .attr("y", (d, i) => 412 + (12*i))
+    .attr("y", (d, i) => 432 + (12*i))
     .attr("font-size", "12px")
 
 // fix time
@@ -81,8 +81,8 @@ let tourDetails = [
     { "date": "2023-11-19", "country": "AU", "city": "Perth", "lat": -31.9505, "lng": 115.8605 },
     { "date": "2023-11-22", "country": "MY", "city": "Kuala Lumpur", "lat": 3.1390, "lng": 101.6869 },
     // manually add 2 points to homebase
-    { "date": "2023-11-25", "country": "Homebase", "city": "Homebase", "lat": 51.5074, "lng": 0.1278 },
-    { "date": "2024-01-15", "country": "Homebase", "city": "Homebase", "lat": 51.5074, "lng": 0.1278 },
+    { "date": "2023-11-25", "country": "Homebase", "city": "Homebase", "lat": -32.648943, "lng": 76.202465 },
+    { "date": "2024-01-15", "country": "Homebase", "city": "Homebase", "lat": -32.648943, "lng": 76.202465 },
     // leave home
     { "date": "2024-01-19", "country": "PH", "city": "Manila", "lat": 14.5995, "lng": 120.9842 },
     { "date": "2024-01-20", "country": "PH", "city": "Manila", "lat": 14.5995, "lng": 120.9842 },
@@ -175,14 +175,14 @@ d3.json("../viz3-tour-map/custom.geo.json").then(function (geoData) {
             .attr("opacity", 1)
             .attr("stroke", "rgb(255, 150, 206)")
 
-        let christmasTreeGroup = tourLayer.append("g")
-        let christmasTree = christmasTreeGroup.append("image")
-            .attr("xlink:href", "../images/christmas-tree.png")
-            .attr("x", 10)  // Top left corner
-            .attr("y", 10)
-            .attr("width", 150)
-            .attr("height", 150)
-            .attr("visibility", "hidden");
+        // let christmasTreeGroup = tourLayer.append("g")
+        // let christmasTree = christmasTreeGroup.append("image")
+        //     .attr("xlink:href", "../images/christmas-tree.png")
+        //     .attr("x", projection())  // Top left corner
+        //     .attr("y", 10)
+        //     .attr("width", 150)
+        //     .attr("height", 150)
+        //     .attr("visibility", "hidden");
 
         function updateMapForDate(tourDate) {
 
@@ -220,11 +220,11 @@ d3.json("../viz3-tour-map/custom.geo.json").then(function (geoData) {
             if (tourCity) {
                 console.log("tourCity", tourCity)
 
-                if (tourCity.city === "Homebase") {
-                    christmasTree.attr("visibility", "show")
-                } else {
-                    christmasTree.attr("visibility", "hidden")
-                }
+                // if (tourCity.city === "Homebase") {
+                //     christmasTree.attr("visibility", "show")
+                // } else {
+                //     christmasTree.attr("visibility", "hidden")
+                // }
 
                 let datagroup = tourLayer.selectAll(".coldplay").data([tourCity])
                 let enterGroup = datagroup.enter().append("g");
@@ -245,16 +245,16 @@ d3.json("../viz3-tour-map/custom.geo.json").then(function (geoData) {
 
                 enterGroup.append("svg:image")
                     .attr("xlink:href", "../images/coldplay-symbol.png")
-                    .attr("width", 30)
-                    .attr("height", 30)
-                    .attr("x", 0)
-                    .attr("y", 0)
+                    .attr("width", 50)
+                    .attr("height", 50)
+                    .attr("x", -10)
+                    .attr("y", -10)
 
                 enterGroup.append("text")
                     .attr("class", "tour-city-label")
-                    .attr("x", 0)
-                    .attr("y", 40)
-                    .attr("fill", "light blue")
+                    .attr("x", -2)
+                    .attr("y", 45)
+                    .attr("fill", "white")
                     .attr("font-size", "12px")
                     .text(d => d.city)
 
@@ -263,8 +263,8 @@ d3.json("../viz3-tour-map/custom.geo.json").then(function (geoData) {
                 if (tourCity.city !== "Homebase")
                     datagroup.append("text")
                         .attr("class", "tour-city-label")
-                        .attr("x", 0)
-                        .attr("y", 40)
+                        .attr("x", -2)
+                        .attr("y", 45)
                         .attr("fill", "white")
                         .attr("font-size", "12px")
                         .text(d => d.city)
