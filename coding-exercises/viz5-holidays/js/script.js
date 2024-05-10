@@ -14,6 +14,22 @@ let viz = vizContainer
   .attr("viewBox", "0 0 " + w + " " + h)
   ;
 
+// append months
+let months = viz.selectAll("text.month")
+  .data(["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"])
+  .enter()
+  .append("text")
+  .attr("class", "month")
+  .text(d => d)
+  .attr("x", (d, i) => i * 67 + 92)
+  .attr("y", 15)
+  .attr("fill", "white")
+  .attr("font-size", 18)
+  .attr("font-weight", 550)
+  .attr("text-anchor", "end")
+  .attr("transform", "translate(20, 0)")
+
+
 function gotData(incomingDatasets) {
   console.log("holidays", incomingDatasets)
   let christmas = incomingDatasets[0]
