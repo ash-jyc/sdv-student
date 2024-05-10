@@ -54,9 +54,6 @@ p {
   box-sizing: border-box;
 }
 
-.graphBox{
-  outline: 5px blue dashed;
-}
 .graphBox img{
   width: 100%;
 }
