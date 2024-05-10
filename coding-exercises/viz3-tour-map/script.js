@@ -37,17 +37,18 @@ let timeParser = d3.timeParse("%Y-%m-%d")
 let timeFormatter = d3.timeFormat("%Y-%m-%d")
 
 let tourDetails = [
-    { "date": "2023-11-06", "country": "JP", "city": "Tokyo", "lat": 35.6895, "lng": 139.6917 },
-    { "date": "2023-11-07", "country": "JP", "city": "Tokyo", "lat": 35.6895, "lng": 139.6917 },
+    { "date": "2023-11-06", "country": "J", "city": "Tokyo", "lat": 35.6895, "lng": 139.6917 },
+    { "date": "2023-11-07", "country": "J", "city": "Tokyo", "lat": 35.6895, "lng": 139.6917 },
     { "date": "2023-11-11", "country": "TW", "city": "Kaohsiung", "lat": 22.6273, "lng": 120.3014 },
     { "date": "2023-11-12", "country": "TW", "city": "Kaohsiung", "lat": 22.6273, "lng": 120.3014 },
-    { "date": "2023-11-15", "country": "ID", "city": "Jakarta", "lat": -6.2088, "lng": 106.8456 },
+    { "date": "2023-11-15", "country": "INDO", "city": "Jakarta", "lat": -6.2088, "lng": 106.8456 },
     { "date": "2023-11-18", "country": "AU", "city": "Perth", "lat": -31.9505, "lng": 115.8605 },
     { "date": "2023-11-19", "country": "AU", "city": "Perth", "lat": -31.9505, "lng": 115.8605 },
     { "date": "2023-11-22", "country": "MY", "city": "Kuala Lumpur", "lat": 3.1390, "lng": 101.6869 },
     // manually add 2 points to homebase
     { "date": "2023-11-25", "country": "Homebase", "city": "Homebase", "lat": 51.5074, "lng": 0.1278 },
     { "date": "2024-01-15", "country": "Homebase", "city": "Homebase", "lat": 51.5074, "lng": 0.1278 },
+    // leave home
     { "date": "2024-01-19", "country": "PH", "city": "Manila", "lat": 14.5995, "lng": 120.9842 },
     { "date": "2024-01-20", "country": "PH", "city": "Manila", "lat": 14.5995, "lng": 120.9842 },
     { "date": "2024-01-23", "country": "SG", "city": "Kallang", "lat": 1.3114, "lng": 103.8822 },
@@ -137,7 +138,7 @@ d3.json("../viz3-tour-map/custom.geo.json").then(function (geoData) {
             .attr("class", "country")
             .attr("d", pathMaker)
             .attr("opacity", 1)
-            .attr("stroke", "white")
+            .attr("stroke", "rgb(255, 150, 206)")
 
         let christmasTreeGroup = tourLayer.append("g")
         let christmasTree = christmasTreeGroup.append("image")
@@ -156,16 +157,19 @@ d3.json("../viz3-tour-map/custom.geo.json").then(function (geoData) {
             let activeCountryCodes = currentData.map(d => d.country);
             console.log("activeCountryCodes", activeCountryCodes)
 
+            // console.log("an active country", activeCountryCodes.includes("d.properties.postal"))
+            // console.log("find tour", tourDetails.find(tour => timeFormatter(tour.date)))
+            console.log("this should be magenta", tourDetails.find(tour => timeFormatter(tour.date) === timeFormatter(tourDate) && tour.country === "JP"))
+
             mapLayer.selectAll(".country")
                 .attr("fill", function (d, i) {
+                    console.log(d)
                     if (activeCountryCodes.includes(d.properties.postal) && (tourDetails.find(tour => timeFormatter(tour.date) === timeFormatter(tourDate) && tour.country === d.properties.postal))) {
                         return "rgb(156, 136, 235)"
                     } else if (activeCountryCodes.includes(d.properties.postal)) {
                         return "cyan"
                     } else if (tourDetails.find(tour => timeFormatter(tour.date) === timeFormatter(tourDate) && tour.country === d.properties.postal)) {
                         return "magenta"
-                    } else {
-                        return "gray"
                     }
                 })
                 .attr("opacity", function (d, i) {
@@ -176,21 +180,18 @@ d3.json("../viz3-tour-map/custom.geo.json").then(function (geoData) {
                         return 1
                     }
                 })
-
-
+            
             let tourCity = tourDetails.find(d => timeFormatter(d.date) === timeFormatter(tourDate));
             if (tourCity) {
                 console.log("tourCity", tourCity)
 
                 if (tourCity.city === "Homebase") {
                     christmasTree.attr("visibility", "show")
-                    datagroup.selectAll(".tour-city-label").remove()
                 } else {
                     christmasTree.attr("visibility", "hidden")
                 }
 
                 let datagroup = tourLayer.selectAll(".coldplay").data([tourCity])
-
                 let enterGroup = datagroup.enter().append("g");
 
                 enterGroup.attr("class", "coldplay")
@@ -218,19 +219,20 @@ d3.json("../viz3-tour-map/custom.geo.json").then(function (geoData) {
                     .attr("class", "tour-city-label")
                     .attr("x", 0)
                     .attr("y", 40)
-                    .attr("fill", "white")
+                    .attr("fill", "light blue")
                     .attr("font-size", "12px")
                     .text(d => d.city)
 
                 //update:
                 datagroup.selectAll(".tour-city-label").remove()
-                datagroup.append("text")
-                    .attr("class", "tour-city-label")
-                    .attr("x", 0)
-                    .attr("y", 40)
-                    .attr("fill", "white")
-                    .attr("font-size", "12px")
-                    .text(d => d.city)
+                if (tourCity.city !== "Homebase")
+                    datagroup.append("text")
+                        .attr("class", "tour-city-label")
+                        .attr("x", 0)
+                        .attr("y", 40)
+                        .attr("fill", "white")
+                        .attr("font-size", "12px")
+                        .text(d => d.city)
                 
 
                 datagroup.transition().duration(d => {
@@ -239,8 +241,7 @@ d3.json("../viz3-tour-map/custom.geo.json").then(function (geoData) {
                     .attr("transform", function (d, i) {
                         // console.log("translate(" + projection([d.lng, d.lat]) + ")")
                         return "translate(" + projection([d.nextLng, d.nextLat]) + ")";
-                    })
-                    ;
+                    });
 
                 // datagroup.selectAll(".tour-city-label")
                 // .text(d => d.city)
@@ -263,7 +264,9 @@ d3.json("../viz3-tour-map/custom.geo.json").then(function (geoData) {
         function animateTours() {
             let i = 0;
             let interval = d3.interval(function () {
-                if (i + 1 >= sortedTourDates.length) interval.stop();
+                if (i >= sortedTourDates.length) {
+                    i = 0
+                };
                 // check if in groupedData
                 updateMapForDate(sortedTourDates[i]);
                 // }
