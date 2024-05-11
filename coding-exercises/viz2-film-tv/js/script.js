@@ -155,7 +155,22 @@ function getPosition(d){
     let a = countryScale(d.country);
     let x = Math.cos(a)*r;
     let y = Math.sin(a)*r;
+    console.log("x", x, "y", y)
     return "translate("+x+", "+y+")"
+}
+
+function getLinePositionX(d) {
+    let r = radialScale(d.daily_rank);
+    let a = countryScale(d.country);
+    let x = Math.cos(a)*r;
+    return x;
+}
+
+function getLinePositionY(d) {
+    let r = radialScale(d.daily_rank);
+    let a = countryScale(d.country);
+    let y = Math.sin(a)*r;
+    return y;
 }
 
 
@@ -173,33 +188,6 @@ function visualizeData(songData) {
     let countryList = Array.from(new Set(songData.map(d => d.country).filter(country => country != "")));
     console.log(countryList)
     countryScale.domain(countryList).range([0, 2*Math.PI - ((2*Math.PI)/countryList.length)])
-
-    let dataByCountry = d3.groups(songData, d => d.country);
-
-    console.log("data by country", dataByCountry)
-    // make it underneath the dots
-    graphLayer.selectAll(".connection-line").data(dataByCountry)
-        .join("line")
-        .attr("class", "connection-line")
-        // draw a line from the first point for each country to the last point
-        .attr("x1", d => {
-            let first = d[1][0];
-            return Math.cos(countryScale(first.country)) * radialScale(first.daily_rank);
-        })
-        .attr("y1", d => {
-            let first = d[1][0];
-            return Math.sin(countryScale(first.country)) * radialScale(first.daily_rank);
-        })
-        .attr("x2", d => {
-            let last = d[1][d[1].length - 1];
-            return Math.cos(countryScale(last.country)) * radialScale(last.daily_rank);
-        })
-        .attr("y2", d => {
-            let last = d[1][d[1].length - 1];
-            return Math.sin(countryScale(last.country)) * radialScale(last.daily_rank);
-        })
-        .attr("stroke", "rgb(156, 136, 235)")
-        .attr("stroke-width", 1)
 
     let countryLabelGroups = backgroundLayer.selectAll(".countryCode").data(countryList, d=>d)
     
@@ -254,6 +242,79 @@ function visualizeData(songData) {
     enteringGroup.transition()
             .attr("transform", getPosition)
     ;
+
+    // draw a line between the songs if both show up in the country
+    let dataByCountry = d3.groups(songData, d => d.country);
+    console.log("data by country", dataByCountry)
+
+    // draw a line between the songs if both show up in the country
+    let dataByCountryFiltered = dataByCountry.filter(d => d[1].length > 1);
+    console.log("data by country filtered", dataByCountryFiltered)
+
+
+    let linegroups = graphLayer.selectAll(".connection-line").data(dataByCountryFiltered);
+
+    linegroups.enter()
+        .append("line")
+            .attr("class", "connection-line")
+            .attr("x1", d => {
+                return getLinePositionX(d[1][0])
+            })
+            .attr("y1", d => {
+                return getLinePositionY(d[1][0])
+            })
+            .attr("x2", d => {
+                return getLinePositionX(d[1][1])
+            })
+            .attr("y2", d => {
+                return getLinePositionY(d[1][1])
+            })
+            .attr("stroke", "rgb(156, 136, 235)")
+            .attr("stroke-width", 1)
+            .lower()
+    ;
+
+    // update
+    linegroups.transition()
+        .attr("class", "connection-line")
+        .attr("x1", d => {
+            return getLinePositionX(d[1][0])
+        })
+        .attr("y1", d => {
+            return getLinePositionY(d[1][0])
+        })
+        .attr("x2", d => {
+            return getLinePositionX(d[1][1])
+        })
+        .attr("y2", d => {
+            return getLinePositionY(d[1][1])
+        })
+
+    // exit
+    linegroups.exit().transition().remove();
+
+    // graphLayer.selectAll(".connection-line").data(dataByCountry)
+    //     .join("line")
+    //     .attr("class", "connection-line")
+    //     // draw a line from the first point for each country to the last point
+    //     .attr("x1", d => {
+    //         let first = d[1][0];
+    //         return Math.cos(countryScale(first.country)) * radialScale(first.daily_rank);
+    //     })
+    //     .attr("y1", d => {
+    //         let first = d[1][0];
+    //         return Math.sin(countryScale(first.country)) * radialScale(first.daily_rank);
+    //     })
+    //     .attr("x2", d => {
+    //         let last = d[1][d[1].length - 1];
+    //         return Math.cos(countryScale(last.country)) * radialScale(last.daily_rank);
+    //     })
+    //     .attr("y2", d => {
+    //         let last = d[1][d[1].length - 1];
+    //         return Math.sin(countryScale(last.country)) * radialScale(last.daily_rank);
+    //     })
+    //     .attr("stroke", "rgb(156, 136, 235)")
+    //     .attr("stroke-width", 1)
 
     const tooltip = d3.select("#tooltip");
 
