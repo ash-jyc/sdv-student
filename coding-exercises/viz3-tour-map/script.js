@@ -25,8 +25,7 @@ let dateText = viz.append("text")
     .attr("class", "tour-date")
     .attr("x", w - xPadding)
     .attr("y", 50)
-    .text("2023-11-06")
-    .attr("font-size", 20)
+    .attr("font-size", "1em")
     .attr("font-family", "sans-serif")
     .attr("text-anchor", "end")
     .attr("alignment-baseline", "middle")
@@ -281,7 +280,9 @@ d3.json("../viz3-tour-map/custom.geo.json").then(function (geoData) {
                 // datagroup.selectAll(".tour-city-label")
                 // .text(d => d.city)
             }
-            dateText.text(timeFormatter(currentData[0].snapshot_date))
+
+            let timeFormatter2 = d3.timeFormat("%B %d, %Y")
+            dateText.text(timeFormatter2(currentData[0].snapshot_date))
         }
 
         // let sortedTourDates = Array.from(new Set(tourDetails.map(d => d.date))).sort((a, b) => a - b);
