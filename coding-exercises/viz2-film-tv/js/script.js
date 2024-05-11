@@ -291,7 +291,12 @@ function visualizeData(songData) {
         })
 
     // exit
-    linegroups.exit().transition().remove();
+    linegroups.exit().transition()
+        .attr("x1", 0)
+        .attr("y1", 0)
+        .attr("x2", 0)
+        .attr("y2", 0)
+    .remove();
 
     // graphLayer.selectAll(".connection-line").data(dataByCountry)
     //     .join("line")
