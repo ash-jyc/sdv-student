@@ -1,14 +1,10 @@
 # Storytelling with Data Visualization 🦕
 
-Hi! I am Ashley and in this repository I will develop my work for the *Storytelling with Data Visualization* class.  
+Hi! I am Ashley and this repository is dedicated to my work from the *Storytelling with Data Visualization* class. Our final project was developing a data journalism piece regarding the resurgence of decades old music in recent history. You can find our final piece [here](https://ash-jyc.github.io/sdv-student/coding-exercises/website).
 
 ### My work
 
-Among other things, I will link to Coding Exercises and Projects:
-
-- [coding exercise (placeholder)](coding-exercises/)
-- [cool project (placeholder)](projects/)
-- ...
+For this class, I created intermediate visualizations in the [coding exercise](coding-exercises/) folder. 
 
 
 ---
